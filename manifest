@@ -1,0 +1,64 @@
+#CorrelationMatrix
+#Wed Feb 19 15:30:00 UTC 2025
+JVMLevel=
+LSID=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00399:1.0
+author=Your Name;Your Institution
+categories=statistics;visualization
+#commandLine when run with source in Docker container:
+commandLine=/CorrelationMatrix/correlation_matrix.py -i <input> -o <output> -m <method> -d <dimension>
+#commandLine when run with source in module zip/taskLib:
+#commandLine=<python_3.9> <libdir>correlation_matrix.py -i <input> -o <output> -m <method> -d <dimension>
+job.docker.image=bioconductor/bioconductor:3.16
+src.repo=https://github.com/username/CorrelationMatrix/
+cpuType=any
+description=Calculates correlation matrices from GCT files. This module takes as input a GCT file and returns a GCT file containing the correlation (Pearson, Spearman, or Kendall) of each column with all other columns or each row with all other rows, as selected by the user.
+documentationUrl=https://github.com/username/CorrelationMatrix/README.md
+fileFormat=gct
+language=Python
+name=CorrelationMatrix
+os=any
+p1_MODE=IN
+p1_TYPE=FILE
+p1_default_value=
+p1_description=Input GCT file path
+p1_fileFormat=gct
+p1_flag=-i
+p1_name=input
+p1_numValues=1..1
+p1_optional=
+p1_prefix=
+p1_prefix_when_specified=
+p1_type=java.io.File
+p1_value=
+p2_MODE=
+p2_TYPE=TEXT
+p2_default_value=pearson
+p2_description=Correlation method to use
+p2_fileFormat=
+p2_flag=-m
+p2_name=method
+p2_numValues=0..1
+p2_optional=
+p2_prefix=
+p2_prefix_when_specified=
+p2_type=java.lang.String
+p2_value=pearson\=pearson;spearman\=spearman;kendall\=kendall
+p3_MODE=
+p3_TYPE=TEXT
+p3_default_value=column
+p3_description=Dimension to correlate - columns or rows
+p3_fileFormat=
+p3_flag=-d
+p3_name=dimension
+p3_numValues=0..1
+p3_optional=
+p3_prefix=
+p3_prefix_when_specified=
+p3_type=java.lang.String
+p3_value=column\=column;row\=row
+privacy=public
+quality=development
+taskDoc=CorrelationMatrix calculates correlation matrices from GCT files, supporting Pearson, Spearman, and Kendall correlation methods. It can generate correlations between columns or rows of the input data matrix.
+taskType=statistics
+userid=your.email@example.com
+version=1.0

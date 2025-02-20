@@ -1,0 +1,19 @@
+[
+    {
+        "name": "Input File",
+        "description": "Required input GCT file specification",
+        "hidden": false,
+        "parameters": [
+            "input"
+        ]
+    },
+    {
+        "name": "Correlation Settings",
+        "description": "Settings to control correlation calculation",
+        "hidden": false,
+        "parameters": [
+            "method",
+            "dimension"
+        ]
+    }
+]
