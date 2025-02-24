@@ -8,13 +8,10 @@ import sys
 import subprocess
 
 try:
-    from cmapPy.pandasGEXpress.parse_gct import parse as parse_gct
+    from gp.data import GCT, write_gct
 except ImportError:
-    subprocess.check_call([sys.executable, "-m", "pip", "install", "cmapPy"])
-    from cmapPy.pandasGEXpress.parse_gct import parse as parse_gct
-
-from cmapPy.pandasGEXpress.write_gct import write as write_gct
-from cmapPy.pandasGEXpress.GCToo import GCToo
+    subprocess.check_call([sys.executable, "-m", "pip", "install", "genepattern-python"])
+    from gp.data import GCT, write_gct
 
 beginning_of_time = timer()
 
@@ -51,61 +48,52 @@ if args.verbose:
     print("Now getting work done.")
     print("~~~~~~~~~~~~~~~~~~~~~~")
 
-# Read input GCT file using cmapPy
+# Read input GCT file using genepattern-python
 if args.verbose:
     print(f"Reading {args.input}...")
-gct_data = parse_gct(args.input)
+gct_data = GCT(args.input)
 
 if args.verbose:
-    print(f"Read input file with {gct_data.data_df.shape[0]} rows and {gct_data.data_df.shape[1]} columns")
-
-# Get the matrix data
-matrix_data = gct_data.data_df.values
+    print(f"Read input file with {gct_data.shape[0]} rows and {gct_data.shape[1]} columns")
 
 # Calculate correlation matrix
 if args.dimension == "column":
+    matrix_data = gct_data.values
     if args.verbose:
         print(f"Calculating {args.method} correlation between columns...")
     if args.method == "pearson":
         cor_matrix = np.corrcoef(matrix_data.T)
     else:  # for spearman or kendall
         cor_matrix = pd.DataFrame(matrix_data).corr(method=args.method).values
-    col_names = gct_data.data_df.columns
+    col_names = gct_data.columns
     row_names = col_names
+    cor_df = pd.DataFrame(cor_matrix, index=row_names, columns=col_names)
+    cor_df['Description'] = None
+    cor_df = cor_df.reset_index(drop=False)
+    cor_df['Name'] = cor_df['index']
+    cor_df = cor_df.set_index(['Name','Description']).drop(columns=['index'])
 elif args.dimension == "row":
+    modified_df = gct_data.reset_index(drop=False).drop(columns=['Description']).set_index('Name')
+    matrix_data = modified_df.values
     if args.verbose:
         print(f"Calculating {args.method} correlation between rows...")
     if args.method == "pearson":
         cor_matrix = np.corrcoef(matrix_data)
     else:  # for spearman or kendall
         cor_matrix = pd.DataFrame(matrix_data.T).corr(method=args.method).values
-    row_names = gct_data.data_df.index
+    row_names = modified_df.index
     col_names = row_names
+    cor_df = pd.DataFrame(cor_matrix, index=row_names, columns=col_names)
+    cor_df['Description'] = None
+    cor_df = cor_df.reset_index(drop=False).set_index(['Name','Description'])
 else:
     raise ValueError("Invalid dimension specified. Use 'column' or 'row'")
 
-# Create a pandas DataFrame with the correlation matrix
-cor_df = pd.DataFrame(cor_matrix, index=row_names, columns=col_names)
-
-# Create row metadata for GCToo (includes id and description)
-row_metadata_df = pd.DataFrame(index=row_names)
-row_metadata_df['id'] = row_names
-row_metadata_df['description'] = row_names
-
-# Create column metadata for GCToo
-col_metadata_df = pd.DataFrame(index=col_names)
-col_metadata_df['id'] = col_names
-col_metadata_df['description'] = col_names
-
-# Create a GCToo object
-result_gct = GCToo(data_df=cor_df, 
-                  row_metadata_df=row_metadata_df,
-                  col_metadata_df=col_metadata_df)
-
-# Write the GCT file using cmapPy
+# Write the GCT file using genepattern-python
 if args.verbose:
     print(f"Writing output to output.gct...")
-write_gct(result_gct, 'output.gct')
+
+write_gct(cor_df, file_path='./output.gct')
 
 if args.verbose:
     print(f"Generated correlation matrix with {cor_df.shape[0]} rows and {cor_df.shape[1]} columns")

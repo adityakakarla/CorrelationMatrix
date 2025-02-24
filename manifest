@@ -5,9 +5,9 @@ LSID=urn:lsid:broad.mit.edu:cancer.software.genepattern.module.analysis:00399:1.
 author=Your Name;Your Institution
 categories=statistics;visualization
 #commandLine when run with source in Docker container:
-commandLine=/CorrelationMatrix/correlation_matrix.py -i <input> -o <output> -m <method> -d <dimension>
+commandLine=/CorrelationModule/correlation_matrix.py -i <input> -m <method> -d <dimension>
 #commandLine when run with source in module zip/taskLib:
-#commandLine=<python_3.9> <libdir>correlation_matrix.py -i <input> -o <output> -m <method> -d <dimension>
+#commandLine=<python_3.9> <libdir>correlation_matrix.py -i <input> -m <method> -d <dimension>
 job.docker.image=bioconductor/bioconductor:3.16
 src.repo=https://github.com/username/CorrelationMatrix/
 cpuType=any
