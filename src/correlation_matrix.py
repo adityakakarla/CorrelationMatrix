@@ -71,9 +71,9 @@ if args.dimension == "column":
     cor_df['Description'] = None
     cor_df = cor_df.reset_index(drop=False)
     cor_df['Name'] = cor_df['index']
-    cor_df = cor_df.set_index(['Name','Description']).drop(columns=['index'])
+    cor_df = cor_df.set_index(['Name','Description']).drop('index',axis=1)
 elif args.dimension == "row":
-    modified_df = gct_data.reset_index(drop=False).drop(columns=['Description']).set_index('Name')
+    modified_df = gct_data.reset_index(drop=False).drop('Description',axis=1).set_index('Name')
     matrix_data = modified_df.values
     if args.verbose:
         print(f"Calculating {args.method} correlation between rows...")
